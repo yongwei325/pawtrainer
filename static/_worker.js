@@ -49,8 +49,20 @@ async function handleOAuth(request, env) {
 
   // Step 1: initial request from Decap -> redirect to GitHub authorize
   if (!code) {
-    const redirectUri = encodeURIComponent(url.origin + url.pathname);
-    const githubUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${redirectUri}&scope=repo`;
+    // Build redirect_uri from the current request URL (preserves /api/auth path).
+    const redirectUri = url.origin + url.pathname;
+    // GitHub requires `state` for CSRF protection; we generate a random one.
+    const state = crypto.randomUUID();
+    // allow_signup=true lets the user create a GitHub account from this prompt if needed.
+    // We do NOT pass redirect_uri explicitly — let GitHub fall back to the
+    // OAuth App's configured callback URL. This avoids redirect_uri matching edge cases.
+    const params = new URLSearchParams({
+      client_id: CLIENT_ID,
+      scope: 'repo',
+      state,
+      allow_signup: 'true',
+    });
+    const githubUrl = `https://github.com/login/oauth/authorize?${params.toString()}`;
     return Response.redirect(githubUrl, 302);
   }
 
