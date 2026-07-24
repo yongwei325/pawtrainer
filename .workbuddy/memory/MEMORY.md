@@ -19,12 +19,12 @@
 - 验证坑：Hugo 默认不发布"发布时间晚于当前"的文章（draft/未来日期会被静默隐藏）。
 
 ## 已锁定信息（用户 2026-07-24 提供）
-- 品牌名：**PawTrainer**；域名：**pawtrainer.com**（默认 .com，用户未指定后缀；如需 .dog/.pet 再说）
+- 品牌名：**PawTrainer**；域名：**pawtrainer.com**（路线 A：先用免费子域 **pawtrainer.pages.dev** 上线，baseURL 已切到 pages.dev；待用户有外币卡或走国内平台买真域名后，再改回并绑 Custom domain）
 - 邮箱：**全部账号统一用 70579579@qq.com**（GitHub / Cloudflare / AdSense 同一邮箱，用户 2026-07-24 明确决策）。GitHub 用户名 yongwei325。
 - GitHub 用户名：**yongwei325**；仓库：yongwei325/pawtrainer
 - 全部占位已替换为 PawTrainer / yongwei325/pawtrainer / pawtrainer.com（全局 Grep 0 残留）。
 
 ## 下一步
-- 用户按 LAUNCH.md 阶段 1→2 注册 GitHub、装 GitHub Desktop、买域名 pawtrainer.com（Cloudflare）。
-- 阶段 6 建 GitHub OAuth 应用后把 Client ID 发我 → 填进 static/admin/config.yml。
+- 路线 A 进行中：用户用 70579579@qq.com 注册 Cloudflare → 建 Pages 项目连 yongwei325/pawtrainer → 部署（hugo --minify / public / HUGO_VERSION=0.128.0）→ 得 pawtrainer.pages.dev。
+- 阶段 6 建 GitHub OAuth 应用后把 Client ID 发我 → 填进 static/admin/config.yml，后台 /admin/ 才可登录。
 - 之后把 ui-design 的 premium 设计移植进 Hugo 模板，注入 AdSense/联盟代码。
