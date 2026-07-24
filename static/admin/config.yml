@@ -11,6 +11,9 @@ backend:
   # GitHub OAuth app Client ID (create a free OAuth app — see ADMIN.md).
   # The Client Secret stays in the OAuth app; Decap exchanges the token in-browser.
   client_id: "0v231iWKpgZb7lu3up9U"
+  # Cloudflare Pages Function that proxies GitHub OAuth (see functions/api/auth.js).
+  # This avoids relying on Netlify's auth gateway.
+  base_url: https://pawtrainer.pages.dev/api/auth
 
 # Simple mode = save commits directly. Uncheck "Draft" + Save to publish.
 publish_mode: simple

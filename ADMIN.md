@@ -23,17 +23,22 @@ git push -u origin main
 ### 2. 建一个免费的 GitHub OAuth 应用（Decap 登录用）
 1. GitHub → 右上角头像 → **Settings** → 左侧 **Developer settings** → **OAuth Apps** → **New OAuth App**。
 2. Application name：`PawTrainer Admin`
-3. Homepage URL：`https://你的域名`（路线 A 用 `https://pawtrainer.pages.dev`；之后买真域名再改）
-4. Authorization callback URL：**`https://你的域名/admin/`**（路线 A 用 `https://pawtrainer.pages.dev/admin/`，结尾斜杠必须有）
+3. Homepage URL：`https://pawtrainer.pages.dev`（之后买了真域名再改）
+4. Authorization callback URL：**`https://pawtrainer.pages.dev/api/auth`**（这个 OAuth 代理函数已放在 `functions/api/auth.js`）
 5. 创建后复制 **Client ID**，填进 `static/admin/config.yml` 的 `client_id`。
-   （Client Secret 只留在 OAuth 应用里，不需要写进仓库——Decap 在浏览器里完成 token 交换。）
+6. 在同一页点 **「Generate a new client secret」**，复制 **Client Secret**（只填进 Cloudflare 环境变量，**不要写进仓库**）。
 
 ### 3. 连接 Cloudflare Pages
 1. Cloudflare 控制台 → **Workers & Pages** → **Create** → 连接 GitHub 仓库。
 2. 构建命令：`hugo --minify`（或 `hugo --gc --minify`）
 3. 构建输出目录：`public`
-4. 环境变量（可选但推荐）：`HUGO_VERSION = 0.128.0`（锁定版本，避免日后 Hugo 大版本变动踩坑）
-5. 部署。部署完成后访问 `https://你的域名/admin/` → 用 GitHub 授权登录 → 进入编辑后台。
+4. 环境变量（必设）：
+   - `HUGO_VERSION = 0.128.0`
+   - `GITHUB_CLIENT_ID = 0v231iWKpgZb7lu3up9U`（你的 OAuth Client ID）
+   - `GITHUB_CLIENT_SECRET = 你的 OAuth Client Secret`
+5. 部署。部署完成后访问 `https://pawtrainer.pages.dev/admin/` → 用 GitHub 授权登录 → 进入编辑后台。
+
+> 为什么需要 Client Secret？Decap 默认走 Netlify 的认证网关，但本站托管在 Cloudflare Pages。我们用 Cloudflare Pages Functions 自己搭了一个 OAuth 代理（`functions/api/auth.js`），所以需要 Client Secret 来向 GitHub 换 token。
 
 ---
 
