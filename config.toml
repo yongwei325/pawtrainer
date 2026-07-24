@@ -1,10 +1,10 @@
 # =============================================================================
 # PawTrainer — Hugo site configuration
 # Deploy: Cloudflare Pages  →  Build command: hugo --minify  →  Publish dir: public
-# (Set Hugo version to latest in the Cloudflare dashboard.)
+# Set environment variable HUGO_VERSION = 0.128.0 in the Cloudflare dashboard.
 # =============================================================================
 
-baseURL = "https://pawtrainer.com"
+baseURL = "https://pawtrainer.pages.dev/"
 languageCode = "en-us"
 title = "PawTrainer — Force-free Dog Training"
 enableGitInfo = false

@@ -20,7 +20,7 @@
 
 ## 已锁定信息（用户 2026-07-24 提供）
 - 品牌名：**PawTrainer**；域名：**pawtrainer.com**（默认 .com，用户未指定后缀；如需 .dog/.pet 再说）
-- 邮箱：GitHub 账号 = **70579579@qq.com**（用户名 yongwei325）；Cloudflare/AdSense 拟用 onlyyongwei@gmail.com（待用户确认是否统一）
+- 邮箱：**全部账号统一用 70579579@qq.com**（GitHub / Cloudflare / AdSense 同一邮箱，用户 2026-07-24 明确决策）。GitHub 用户名 yongwei325。
 - GitHub 用户名：**yongwei325**；仓库：yongwei325/pawtrainer
 - 全部占位已替换为 PawTrainer / yongwei325/pawtrainer / pawtrainer.com（全局 Grep 0 残留）。
 

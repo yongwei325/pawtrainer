@@ -20,7 +20,7 @@ media_folder: "static/images"
 public_folder: "/images"
 
 # Show the editor at this path
-site_url: https://pawtrainer.com   # used for preview links
+site_url: https://pawtrainer.pages.dev   # used for preview links (route A: free subdomain)
 
 collections:
   # ---------------------------------------------------------------------------
