@@ -1,26 +1,39 @@
 /**
- * Cloudflare Pages Function — OAuth proxy for Decap CMS (GitHub backend).
+ * Cloudflare Pages Advanced Mode Worker — OAuth proxy for Decap CMS (GitHub backend).
  *
  * Endpoint: https://pawtrainer.pages.dev/api/auth
  * Usage in static/admin/config.yml:
  *   backend:
  *     name: github
- *     base_url: https://pawtrainer.pages.dev/api/auth
+ *     base_url: https://pawtrainer.pages.dev/api
  *
  * Required Cloudflare Pages environment variables:
  *   GITHUB_CLIENT_ID     (from your GitHub OAuth app)
- *   GITHUB_CLIENT_SECRET (from your GitHub OAuth app → Generate a new client secret)
+ *   GITHUB_CLIENT_SECRET (from your GitHub OAuth app)
  *
  * Flow:
- *   1. Decap opens this endpoint in a popup.
+ *   1. Decap opens /api/auth in a popup.
  *   2. We redirect to GitHub /login/oauth/authorize.
- *   3. GitHub redirects back here with ?code=...
+ *   3. GitHub redirects back to /api/auth?code=...
  *   4. We exchange code for access_token.
  *   5. We return an HTML page that posts the token back to Decap.
  */
 
-export async function onRequestGet(context) {
-  const { request, env } = context;
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+
+    // OAuth proxy endpoint
+    if (url.pathname === '/api/auth') {
+      return handleOAuth(request, env);
+    }
+
+    // Everything else is served by Cloudflare Pages static assets
+    return env.ASSETS.fetch(request);
+  }
+};
+
+async function handleOAuth(request, env) {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
 
@@ -34,14 +47,14 @@ export async function onRequestGet(context) {
     );
   }
 
-  // Step 1: initial request from Decap → redirect to GitHub authorize
+  // Step 1: initial request from Decap -> redirect to GitHub authorize
   if (!code) {
     const redirectUri = encodeURIComponent(url.origin + url.pathname);
     const githubUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${redirectUri}&scope=repo`;
     return Response.redirect(githubUrl, 302);
   }
 
-  // Step 2: GitHub callback → exchange code for access token
+  // Step 2: GitHub callback -> exchange code for access token
   const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
     method: 'POST',
     headers: {
