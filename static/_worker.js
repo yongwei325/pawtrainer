@@ -1,63 +1,80 @@
 /**
- * Cloudflare Pages Advanced Mode Worker — OAuth proxy for Decap CMS (GitHub backend).
+ * Cloudflare Pages Advanced Mode Worker — Auth proxy for Decap CMS (GitHub backend).
+ *
+ * Two modes (auto-detected):
+ *   PAT mode:   GITHUB_PAT env var is set → returns token directly, NO OAuth popup.
+ *   OAuth mode: GITHUB_CLIENT_ID + GITHUB_CLIENT_SECRET → full GitHub OAuth flow.
  *
  * Endpoint: https://pawtrainer.pages.dev/api/auth
- * Usage in static/admin/config.yml:
- *   backend:
- *     name: github
- *     base_url: https://pawtrainer.pages.dev/api
  *
  * Required Cloudflare Pages environment variables:
- *   GITHUB_CLIENT_ID     (from your GitHub OAuth app)
- *   GITHUB_CLIENT_SECRET (from your GitHub OAuth app)
- *
- * Flow:
- *   1. Decap opens /api/auth in a popup.
- *   2. We redirect to GitHub /login/oauth/authorize.
- *   3. GitHub redirects back to /api/auth?code=...
- *   4. We exchange code for access_token.
- *   5. We return an HTML page that posts the token back to Decap.
+ *   PAT mode:   GITHUB_PAT (a GitHub Personal Access Token with `repo` scope)
+ *   OAuth mode: GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET
  */
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // OAuth proxy endpoint
+    // Auth endpoint
     if (url.pathname === '/api/auth') {
-      return handleOAuth(request, env);
+      return handleAuth(request, env);
     }
 
-    // Everything else is served by Cloudflare Pages static assets
+    // Everything else: static assets
     return env.ASSETS.fetch(request);
   }
 };
 
-async function handleOAuth(request, env) {
+async function handleAuth(request, env) {
   const url = new URL(request.url);
-  const code = url.searchParams.get('code');
+  const origin = url.origin; // https://pawtrainer.pages.dev
 
+  // ── PAT mode: return token directly ──
+  const PAT = env.GITHUB_PAT;
+  if (PAT) {
+    const payload = JSON.stringify({ token: PAT, provider: 'github' });
+    const safeOrigin = origin.replace(/'/g, "\\'");
+
+    const html = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Auth · PawTrainer</title>
+</head>
+<body>
+  <p>Signing in with Personal Access Token…</p>
+  <script>
+    (function () {
+      window.opener.postMessage('authorizing:github', '*');
+      window.opener.postMessage(
+        'authorization:github:success:${payload.replace(/'/g, "\\'")}',
+        '${safeOrigin}'
+      );
+    })();
+  </script>
+</body>
+</html>`;
+    return new Response(html, {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    });
+  }
+
+  // ── OAuth mode: full GitHub OAuth flow ──
   const CLIENT_ID = env.GITHUB_CLIENT_ID;
   const CLIENT_SECRET = env.GITHUB_CLIENT_SECRET;
+  const code = url.searchParams.get('code');
 
   if (!CLIENT_ID || !CLIENT_SECRET) {
     return new Response(
-      'OAuth credentials not configured. Please set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in Cloudflare Pages environment variables.',
+      'Neither GITHUB_PAT nor GITHUB_CLIENT_ID/CLIENT_SECRET configured. Please set one set of credentials in Cloudflare Pages environment variables.',
       { status: 500, headers: { 'Content-Type': 'text/plain; charset=utf-8' } }
     );
   }
 
-  // Step 1: initial request from Decap -> redirect to GitHub authorize
+  // Step 1: redirect to GitHub authorize
   if (!code) {
-    // Build redirect_uri from the current request URL (preserves /api/auth path).
-    const redirectUri = url.origin + url.pathname;
-    // GitHub requires `state` for CSRF protection; we generate a random one.
     const state = crypto.randomUUID();
-    // allow_signup=true lets the user create a GitHub account from this prompt if needed.
-    // We do NOT pass redirect_uri explicitly — let GitHub fall back to the
-    // OAuth App's configured callback URL. This avoids redirect_uri matching edge cases.
-    // scope=public_repo because the repo is public; `repo` can require extra app verification.
-    // prompt=consent forces the consent screen every time (bypasses cached prior approvals).
     const params = new URLSearchParams({
       client_id: CLIENT_ID,
       scope: 'public_repo',
@@ -65,11 +82,13 @@ async function handleOAuth(request, env) {
       allow_signup: 'true',
       prompt: 'consent',
     });
-    const githubUrl = `https://github.com/login/oauth/authorize?${params.toString()}`;
-    return Response.redirect(githubUrl, 302);
+    return Response.redirect(
+      `https://github.com/login/oauth/authorize?${params.toString()}`,
+      302
+    );
   }
 
-  // Step 2: GitHub callback -> exchange code for access token
+  // Step 2: exchange code for access token
   const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
     method: 'POST',
     headers: {
@@ -84,7 +103,6 @@ async function handleOAuth(request, env) {
   });
 
   const tokenData = await tokenRes.json();
-
   if (tokenData.error) {
     return new Response(
       `GitHub OAuth error: ${tokenData.error_description || tokenData.error}`,
@@ -94,15 +112,15 @@ async function handleOAuth(request, env) {
 
   const token = tokenData.access_token;
   if (!token) {
-    return new Response(
-      'GitHub did not return an access token.',
-      { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } }
-    );
+    return new Response('GitHub did not return an access token.', {
+      status: 400,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
   }
 
-  // Step 3: return a tiny page that hands the token back to Decap via postMessage
+  // Step 3: return token to Decap
   const payload = JSON.stringify({ token, provider: 'github' });
-  const origin = url.origin.replace(/'/g, "\\'");
+  const safeOrigin = origin.replace(/'/g, "\\'");
 
   const html = `<!doctype html>
 <html lang="en">
@@ -115,7 +133,7 @@ async function handleOAuth(request, env) {
   <script>
     (function () {
       function receiveMessage(e) {
-        if (e.origin !== '${origin}') return;
+        if (e.origin !== '${safeOrigin}') return;
         window.opener.postMessage(
           'authorization:github:success:${payload.replace(/'/g, "\\'")}',
           e.origin
@@ -127,7 +145,6 @@ async function handleOAuth(request, env) {
   </script>
 </body>
 </html>`;
-
   return new Response(html, {
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
   });
