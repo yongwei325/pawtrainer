@@ -46,11 +46,33 @@ async function handleAuth(request, env) {
   <p>Signing in with Personal Access Token…</p>
   <script>
     (function () {
-      window.opener.postMessage('authorizing:github', '*');
-      window.opener.postMessage(
-        'authorization:github:success:${payload.replace(/'/g, "\\'")}',
-        '${safeOrigin}'
-      );
+      const successMsg = 'authorization:github:success:${payload.replace(/'/g, "\\'")}';
+      const origin = '${safeOrigin}';
+
+      function sendToken(targetOrigin) {
+        if (window.opener) {
+          window.opener.postMessage(successMsg, targetOrigin || '*');
+        }
+      }
+
+      // Decap/Sveltia handshake: parent must send 'authorizing:github' before we send the token
+      window.addEventListener('message', function (e) {
+        if (e.data === 'authorizing:github') {
+          sendToken(e.origin);
+          setTimeout(function () { window.close(); }, 200);
+        }
+      }, false);
+
+      // Notify parent we're ready
+      if (window.opener) {
+        window.opener.postMessage('authorizing:github', '*');
+      }
+
+      // Fallback: send anyway after a short delay in case parent doesn't handshake
+      setTimeout(function () {
+        sendToken(origin);
+        setTimeout(function () { window.close(); }, 500);
+      }, 1500);
     })();
   </script>
 </body>
