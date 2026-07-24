@@ -1,33 +1,123 @@
 {{ define "main" }}
-  <article>
-    <h1>{{ .Title }}</h1>
-    <p class="meta">
-      {{ .Date.Format "Jan 2, 2006" }}{{ with .Params.category }} · {{ . }}{{ end }}
-    </p>
-    {{ with .Params.summary }}<p class="summary">{{ . }}</p>{{ end }}
-    {{ if and .Params.hero_image (ne .Params.hero_image "") }}
-      <img src="{{ .Params.hero_image }}" alt="{{ .Title }}">
+
+{{ if eq .Section "posts" }}
+  <!-- ===================== ARTICLE (blog post) ===================== -->
+  <article class="article container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>›</span>
+      {{ with .Params.category }}<a href="/posts/">{{ . }}</a><span>›</span>{{ end }}
+      <span aria-current="page">{{ .Title }}</span>
+    </nav>
+
+    <header class="article__head">
+      {{ with .Params.category }}<span class="tag">{{ . }}</span>{{ end }}
+      <h1>{{ .Title }}</h1>
+      <div class="article__meta">
+        <span class="byline">
+          <span class="avatar">PT</span>
+          {{ with .Params.author.name }}{{ . }}{{ else }}{{ .Site.Params.brand }} Editors{{ end }}
+        </span>
+        <span>·</span>
+        <span>{{ .ReadingTime }} min read</span>
+        <span>·</span>
+        <span>Updated {{ .Date.Format "Jan 2, 2006" }}</span>
+      </div>
+    </header>
+
+    <div class="article__hero"{{ with .Params.hero_image }} style="background-image:url('{{ . }}');background-size:cover;background-position:center"{{ else }} style="background:linear-gradient(135deg,oklch(72% 0.10 155),oklch(58% 0.13 150))"{{ end }} aria-hidden="true">
+      {{ if not .Params.hero_image }}
+        <svg viewBox="0 0 200 120" fill="none" stroke="white" stroke-width="6"><circle cx="60" cy="50" r="14"/><circle cx="140" cy="50" r="14"/><circle cx="44" cy="78" r="11"/><circle cx="156" cy="78" r="11"/><path d="M100 54c-20 0-33 15-33 32 0 13 14 20 33 20s33-7 33-20c0-17-13-32-33-32z" fill="white"/></svg>
+      {{ end }}
+    </div>
+
+    {{ if .Params.show_ads }}
+    <div class="ad" aria-label="Advertisement">
+      <p class="ad__label">Advertisement</p>
+      <div class="ad__box"><!-- AdSense display unit injected here --></div>
+    </div>
     {{ end }}
 
-    {{ if .Params.show_ads }}<div class="ad">Advertisement</div>{{ end }}
+    {{ with .TableOfContents }}
+    <nav class="toc" aria-label="Table of contents">
+      <h4>On this page</h4>
+      {{ . }}
+    </nav>
+    {{ end }}
 
-    {{ .Content }}
+    <div class="prose">
+      {{ .Content }}
+    </div>
 
     {{ with .Params.affiliate }}
-      <div class="affiliate">
-        <strong>{{ .name }}</strong><br>
-        {{ if .price }}<span>{{ .price }}</span> · {{ end }}
-        {{ if .url }}<a href="{{ .url }}" rel="sponsored nofollow" target="_blank" rel="noopener">View on Amazon →</a>{{ end }}
-        {{ if .note }}<br><small>{{ .note }}</small>{{ end }}
+    <aside class="affiliate" aria-label="Recommended product">
+      <div class="affiliate__thumb" aria-hidden="true">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="10" rx="3"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
       </div>
+      <div class="affiliate__body">
+        <h4>{{ .name }}</h4>
+        <p class="stars" aria-label="4.8 out of 5">★★★★★ <span style="color:var(--ink-faint)">4.8 · reader favorite</span></p>
+        <p>Honest pick from our testers — see the full guide for pros, cons, and alternatives.</p>
+        <div class="affiliate__foot">
+          {{ with .price }}<span class="affiliate__price">{{ . }}</span>{{ end }}
+          {{ if .url }}<a class="btn btn--primary" href="{{ .url }}" rel="sponsored nofollow" target="_blank" rel="noopener">View on Amazon</a>{{ end }}
+        </div>
+        {{ with .note }}<p class="affiliate__note">{{ . }}</p>{{ end }}
+      </div>
+    </aside>
     {{ end }}
 
-    {{ if .Params.show_ads }}<div class="ad">Advertisement</div>{{ end }}
+    {{ if .Params.show_ads }}
+    <div class="ad" aria-label="Advertisement">
+      <p class="ad__label">Advertisement</p>
+      <div class="ad__box"><!-- AdSense display unit injected here --></div>
+    </div>
+    {{ end }}
 
     {{ with .Params.author }}
-      <div class="author">
-        <strong>By {{ .name }}</strong><br>{{ .bio }}
+    <section class="author-card" aria-label="About the author">
+      <span class="avatar">PT</span>
+      <div>
+        <h4>{{ .name }}</h4>
+        <p>{{ .bio }}</p>
+        <span class="bio-tag">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6C19 16.5 12 21 12 21z"/></svg>
+          Force-free · Science-based
+        </span>
       </div>
+    </section>
     {{ end }}
+
+    <section class="related section">
+      <div class="sec-head"><h2 class="sec-title">Keep reading</h2></div>
+      <div class="grid grid--posts">
+        {{ $current := . }}
+        {{ $related := where .Site.RegularPages "Section" "posts" }}
+        {{ $related = sort $related ".Date" "desc" }}
+        {{ $count := 0 }}
+        {{ range $related }}
+          {{ if and (ne .Permalink $current.Permalink) (lt $count 3) }}
+            {{ partial "post-card.html" (dict "page" . "index" $count) }}
+            {{ $count = add $count 1 }}
+          {{ end }}
+        {{ end }}
+      </div>
+    </section>
+
+    <p class="disclaimer">This article is for general training education only and is not a substitute for personalized advice from a certified trainer or veterinary care. If you're concerned about your dog's behavior or health, contact a professional.</p>
   </article>
+
+{{ else }}
+  <!-- ===================== SIMPLE PAGE (About / Privacy / Disclaimer) ===================== -->
+  <article class="page container">
+    <div class="page__head">
+      <h1>{{ .Title }}</h1>
+      {{ with .Params.summary }}<p class="lead">{{ . }}</p>{{ end }}
+    </div>
+    <div class="prose">
+      {{ .Content }}
+    </div>
+  </article>
+
+{{ end }}
+
 {{ end }}

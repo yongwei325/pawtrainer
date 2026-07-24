@@ -1,13 +1,103 @@
 {{ define "main" }}
-  <h1>Force-free Dog Training</h1>
-  <p class="summary">{{ .Site.Params.description }}</p>
-  <h2>Latest articles</h2>
-  <ul class="posts">
-    {{ range where .Site.RegularPages "Section" "posts" }}
-      <li>
-        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-        <span class="meta"> · {{ .Date.Format "Jan 2, 2006" }}</span>
-      </li>
-    {{ end }}
-  </ul>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="container hero__inner">
+      <div>
+        <p class="eyebrow">For new dog parents</p>
+        <h1>Train your dog with <em>kindness</em>, not force.</h1>
+        <p class="lead">Step-by-step, science-backed guides that help your puppy listen — using positive reinforcement, not punishment. No guesswork, no guilt.</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="/posts/">Start with puppy basics</a>
+          <a class="btn btn--ghost" href="/#fixes">Fix a behavior problem</a>
+        </div>
+        <div class="hero__trust">
+          <div><b>120+</b> free guides</div>
+          <div><b>100%</b> force-free</div>
+          <div><b>4.8★</b> from 2,300 readers</div>
+        </div>
+      </div>
+      <div class="hero__art" aria-hidden="true">
+        <svg viewBox="0 0 200 200" fill="none">
+          <path d="M60 40c-10-22-40-26-44-6-4 18 16 34 30 40" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+          <path d="M140 40c10-22 40-26 44-6 4 18-16 34-30 40" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+          <path d="M100 60c34 0 56 24 56 56 0 34-26 60-56 60s-56-26-56-60c0-32 22-56 56-56z" fill="currentColor" opacity="0.9"/>
+          <circle cx="82" cy="108" r="6" fill="oklch(98% 0.01 85)"/>
+          <circle cx="118" cy="108" r="6" fill="oklch(98% 0.01 85)"/>
+          <path d="M92 130c4 5 12 5 16 0" stroke="oklch(98% 0.01 85)" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="100" cy="124" r="4" fill="oklch(98% 0.01 85)"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Pillars / Topic clusters ===== -->
+  <section class="section container" id="start">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Where to begin</p>
+        <h2 class="sec-title">Pick your path</h2>
+      </div>
+      <a class="btn btn--ghost" href="/posts/">Browse all guides</a>
+    </div>
+    <div class="grid grid--pillars">
+      <article class="pillar">
+        <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/><circle cx="12" cy="12" r="9"/></svg></span>
+        <h3>Puppy Basics</h3>
+        <p>Crate training, potty breaks, and the first commands — built for the chaotic first 8 weeks.</p>
+        <a class="more" href="/posts/">Read guides →</a>
+      </article>
+      <article class="pillar">
+        <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 2 8h10c0-3 2-5 2-8a7 7 0 0 0-7-7z"/><path d="M9 21h6"/></svg></span>
+        <h3>Behavior Fixes</h3>
+        <p>Stop biting, barking, leash pulling, and separation anxiety with calm, proven methods.</p>
+        <a class="more" href="/posts/">Read guides →</a>
+      </article>
+      <article class="pillar">
+        <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5 9 17l11-11"/></svg></span>
+        <h3>Train Commands</h3>
+        <p>Sit, stay, recall, and leave-it — taught the way dogs actually learn, one rep at a time.</p>
+        <a class="more" href="/posts/">Read guides →</a>
+      </article>
+      <article class="pillar">
+        <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12v4H6zM6 6v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6"/><path d="M10 11l4 4M14 11l-4 4"/></svg></span>
+        <h3>Gear Picks</h3>
+        <p>Tested harnesses, chews, and crates we actually use — with honest pros and cons.</p>
+        <a class="more" href="/posts/">Read guides →</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== Force-free promise ===== -->
+  <section class="section container" id="fixes">
+    <div class="promise">
+      <span class="badge-lg" aria-hidden="true">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6C19 16.5 12 21 12 21z"/></svg>
+      </span>
+      <div>
+        <h2>Our force-free promise</h2>
+        <p>Every method on this site is rooted in reward-based training and modern animal behavior science. We never recommend choke chains, prong collars, or punishment — because the kindest way is also the most effective.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Latest articles ===== -->
+  <section class="section container">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Fresh this week</p>
+        <h2 class="sec-title">Latest guides</h2>
+      </div>
+      <a class="btn btn--ghost" href="/posts/">See all</a>
+    </div>
+    <div class="grid grid--posts">
+      {{ $pages := where .Site.RegularPages "Section" "posts" }}
+      {{ $pages = sort $pages ".Date" "desc" }}
+      {{ range $index, $page := first 4 $pages }}
+        {{ partial "post-card.html" (dict "page" $page "index" $index) }}
+      {{ end }}
+    </div>
+  </section>
+
 {{ end }}

@@ -1,11 +1,20 @@
 {{ define "main" }}
-  <h1>{{ .Title }}</h1>
-  <ul class="posts">
-    {{ range .Pages }}
-      <li>
-        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-        <span class="meta"> · {{ .Date.Format "Jan 2, 2006" }}</span>
-      </li>
-    {{ end }}
-  </ul>
+  <section class="section container">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Browse the library</p>
+        <h2 class="sec-title">{{ .Title | default "All guides" }}</h2>
+      </div>
+    </div>
+    <div class="grid grid--posts">
+      {{ $pages := .Pages }}
+      {{ if not $pages }}{{ $pages = .Site.RegularPages }}{{ end }}
+      {{ $pages = sort $pages ".Date" "desc" }}
+      {{ range $index, $page := $pages }}
+        {{ if not $page.Draft }}
+          {{ partial "post-card.html" (dict "page" $page "index" $index) }}
+        {{ end }}
+      {{ end }}
+    </div>
+  </section>
 {{ end }}

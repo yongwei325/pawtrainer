@@ -1,52 +1,150 @@
-{{/*
-  PLACEHOLDER base layout — minimal & functional.
-  Replace with the premium design from ui-design/ (Fraunces/Newsreader,
-  sage+amber tokens) when porting the visual system into Hugo.
-*/}}
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ .Title }} | PawTrainer</title>
-  <meta name="description" content="{{ .Params.summary | default .Site.Params.description }}">
-  <style>
-    :root{--ink:#2a2622;--muted:#6b6258;--brand:#3f7d5a;--paper:#fbf8f3;--line:#e7e0d6}
-    *{box-sizing:border-box}
-    body{margin:0;font:17px/1.7 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--paper)}
-    header.nav{border-bottom:1px solid var(--line);padding:1rem clamp(1rem,4vw,2rem);display:flex;align-items:center;gap:1rem}
-    header.nav a.brand{font-weight:700;color:var(--ink);text-decoration:none;font-size:1.2rem}
-    header.nav nav{margin-left:auto;display:flex;gap:1rem}
-    header.nav nav a{color:var(--muted);text-decoration:none}
-    main{max-width:720px;margin:0 auto;padding:2.5rem clamp(1rem,4vw,2rem)}
-    footer{border-top:1px solid var(--line);padding:2rem;color:var(--muted);font-size:.85rem;text-align:center}
-    h1{font-size:2.2rem;line-height:1.15;margin:0 0 .5rem}
-    h2{margin-top:2rem}
-    .meta{color:var(--muted);font-size:.9rem}
-    .summary{font-size:1.1rem;color:var(--muted)}
-    .ad{border:1px dashed var(--line);padding:1rem;text-align:center;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;margin:2rem 0}
-    .affiliate{border:1px solid var(--brand);border-radius:12px;padding:1rem;margin:2rem 0}
-    .affiliate a{font-weight:600}
-    .author{border-top:1px solid var(--line);margin-top:2rem;padding-top:1rem;color:var(--muted);font-size:.9rem}
-    a{color:var(--brand)}
-    ul.posts{list-style:none;padding:0}
-    ul.posts li{padding:.75rem 0;border-bottom:1px solid var(--line)}
-  </style>
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Params.brand }}{{ end }}</title>
+  <meta name="description" content="{{ .Description | default .Site.Params.description }}">
+  {{ with .Params.tags }}<meta name="keywords" content="{{ delimit . ", " }}">{{ end }}
+
+  <!-- No-flash theme init: apply saved/system theme before first paint -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Newsreader:opsz,wght@6..72,400..600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-  <header class="nav">
-    <a class="brand" href="/">{{ .Site.Params.brand }}</a>
-    <nav>
-      <a href="/posts/">Articles</a>
-      <a href="/about/">About</a>
-      <a href="/privacy/">Privacy</a>
-    </nav>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="/" aria-label="PawTrainer home">
+        <svg class="paw" viewBox="0 0 64 64" aria-hidden="true">
+          <circle class="pad" cx="20" cy="26" r="7"/><circle class="pad" cx="44" cy="26" r="7"/>
+          <circle class="pad" cx="12" cy="40" r="6"/><circle class="pad" cx="52" cy="40" r="6"/>
+          <path class="pad" d="M32 30c-9 0-15 7-15 14 0 6 6 9 15 9s15-3 15-9c0-7-6-14-15-14z"/>
+        </svg>
+        <span>PawTrainer<small>Kind training, real results</small></span>
+      </a>
+      <nav aria-label="Primary">
+        <ul class="nav__links" id="navLinks">
+          <li><a href="/posts/">Puppy Basics</a></li>
+          <li><a href="/#fixes">Behavior Fixes</a></li>
+          <li><a href="/posts/">Train Commands</a></li>
+          <li><a href="/posts/">Gear Picks</a></li>
+          <li><a href="/about/">About</a></li>
+        </ul>
+      </nav>
+      <div class="nav__actions">
+        <button class="icon-btn" aria-label="Search (coming soon)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle dark mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
   </header>
+
   <main>
     {{ block "main" . }}{{ end }}
   </main>
-  <footer>
-    © {{ now.Year }} {{ .Site.Params.brand }}. Force-free, science-based dog training.
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <div class="container footer__grid">
+      <div class="footer__col footer__about">
+        <a class="brand" href="/" aria-label="PawTrainer home">
+          <svg class="paw" viewBox="0 0 64 64" aria-hidden="true"><circle class="pad" cx="20" cy="26" r="7"/><circle class="pad" cx="44" cy="26" r="7"/><circle class="pad" cx="12" cy="40" r="6"/><circle class="pad" cx="52" cy="40" r="6"/><path class="pad" d="M32 30c-9 0-15 7-15 14 0 6 6 9 15 9s15-3 15-9c0-7-6-14-15-14z"/></svg>
+          <span>PawTrainer</span>
+        </a>
+        <p>Kind, evidence-based dog training for everyday owners. We're reader-supported — some links earn a commission.</p>
+      </div>
+      <div class="footer__col">
+        <h4>Guides</h4>
+        <ul><li><a href="/posts/">Puppy Basics</a></li><li><a href="/posts/">Behavior Fixes</a></li><li><a href="/posts/">Train Commands</a></li><li><a href="/posts/">Gear Picks</a></li></ul>
+      </div>
+      <div class="footer__col">
+        <h4>Company</h4>
+        <ul><li><a href="/about/">About Us</a></li><li><a href="/about/">Our Methods</a></li><li><a href="/contact/">Contact</a></li><li><a href="/about/">Write for Us</a></li></ul>
+      </div>
+      <div class="footer__col">
+        <h4>Legal</h4>
+        <ul><li><a href="/privacy/">Privacy Policy</a></li><li><a href="/disclaimer/">Disclaimer</a></li><li><a href="/privacy/">Cookie Settings</a></li><li><a href="/disclaimer/">Affiliate Disclosure</a></li></ul>
+      </div>
+    </div>
+    <div class="container footer__bar">
+      <span>© {{ now.Year }} {{ .Site.Params.brand }}. For training guidance only — not a substitute for veterinary care.</span>
+      <span>Made with patience 🐾</span>
+    </div>
   </footer>
+
+  <!-- ===== Cookie consent ===== -->
+  <aside class="cookie" id="cookie" role="dialog" aria-label="Cookie consent">
+    <p>We use cookies to remember your preferences and measure traffic. See our <a href="/privacy/">Privacy Policy</a>.</p>
+    <div class="cookie__actions">
+      <button class="btn btn--ghost" id="cookieSettings">Manage</button>
+      <button class="btn btn--brand" id="cookieAccept">Accept all</button>
+    </div>
+  </aside>
+
+  <script>
+    // Theme toggle (light / dark, persists choice; system is the default)
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+      });
+    }
+
+    // Mobile menu
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', () => {
+        const open = navLinks.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      navLinks.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', () => {
+          navLinks.classList.remove('open');
+          menuToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    // Cookie consent
+    const cookie = document.getElementById('cookie');
+    if (cookie) {
+      try { if (localStorage.getItem('cookieOK')) cookie.style.display = 'none'; } catch (e) {}
+      const accept = document.getElementById('cookieAccept');
+      const manage = document.getElementById('cookieSettings');
+      const dismiss = function () {
+        try { localStorage.setItem('cookieOK', '1'); } catch (e) {}
+        cookie.style.display = 'none';
+      };
+      if (accept) accept.addEventListener('click', dismiss);
+      if (manage) manage.addEventListener('click', dismiss);
+    }
+  </script>
 </body>
 </html>
