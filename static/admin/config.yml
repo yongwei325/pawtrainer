@@ -30,8 +30,8 @@ collections:
   # Articles — the core content type
   # ---------------------------------------------------------------------------
   - name: "posts"
-    label: "Articles"
-    label_singular: "Article"
+    label: "文章"
+    label_singular: "文章"
     folder: "content/posts"
     create: true
     slug: "{{slug}}"
@@ -40,78 +40,78 @@ collections:
     delimiter: "---"
     summary: "{{title}}"
     fields:
-      - { name: title, label: "Title", widget: string, required: true }
-      - { name: date, label: "Publish Date", widget: datetime, required: true }
+      - { name: title, label: "标题", widget: string, required: true }
+      - { name: date, label: "发布时间", widget: datetime, required: true }
       - name: draft
-        label: "Draft (hidden until published)"
+        label: "草稿（发布前隐藏）"
         widget: boolean
         default: true
-        hint: "Keep ON while writing. Turn OFF and Save to publish the article."
+        hint: "写作时保持开启。关闭后保存即可发布文章。"
       - name: category
-        label: "Category"
+        label: "分类"
         widget: select
         default: "Puppy Basics"
         options:
-          - "Puppy Basics"
-          - "Behavior Problems"
-          - "Commands"
-          - "Gear & Reviews"
+          - { label: "幼犬基础", value: "Puppy Basics" }
+          - { label: "行为问题", value: "Behavior Problems" }
+          - { label: "指令训练", value: "Commands" }
+          - { label: "装备评测", value: "Gear & Reviews" }
       - name: tags
-        label: "Tags"
+        label: "标签"
         widget: list
-        field: { name: tag, label: "Tag", widget: string }
+        field: { name: tag, label: "标签", widget: string }
         summary: "{{fields.tag}}"
       - name: summary
-        label: "Excerpt"
+        label: "摘要"
         widget: text
-        hint: "Short summary shown on cards and in search results."
+        hint: "显示在卡片和搜索结果中的简短摘要。"
       - name: author
-        label: "Author (E-E-A-T signal)"
+        label: "作者（E-E-A-T 信号）"
         widget: object
         collapsed: false
         fields:
-          - { name: name, label: "Name", widget: string, default: "PawTrainer Editors" }
-          - { name: bio, label: "Bio", widget: text }
+          - { name: name, label: "姓名", widget: string, default: "PawTrainer Editors" }
+          - { name: bio, label: "简介", widget: text }
       - name: hero_image
-        label: "Hero Image"
+        label: "头图"
         widget: image
         required: false
       - name: affiliate
-        label: "Affiliate Product (optional)"
+        label: "联盟商品（可选）"
         widget: object
         required: false
         fields:
-          - { name: name, label: "Product Name", widget: string }
-          - { name: url, label: "Affiliate URL", widget: string }
-          - { name: price, label: "Price", widget: string }
-          - { name: note, label: "Disclosure Note", widget: string, default: "As an Amazon Associate we earn from qualifying purchases." }
+          - { name: name, label: "商品名称", widget: string }
+          - { name: url, label: "联盟链接", widget: string }
+          - { name: price, label: "价格", widget: string }
+          - { name: note, label: "披露声明", widget: string, default: "As an Amazon Associate we earn from qualifying purchases." }
       - name: show_ads
-        label: "Show AdSense ads on this page"
+        label: "本页显示 AdSense 广告"
         widget: boolean
         default: true
-      - { name: body, label: "Content", widget: markdown, required: true, hint: "Write the article in Markdown." }
+      - { name: body, label: "正文内容", widget: markdown, required: true, hint: "用 Markdown 格式写文章。" }
 
   # ---------------------------------------------------------------------------
   # Static pages — About / Privacy / Disclaimer (needed for AdSense compliance)
   # ---------------------------------------------------------------------------
   - name: "pages"
-    label: "Pages"
+    label: "静态页面"
     files:
       - name: "about"
-        label: "About"
+        label: "关于我们"
         file: "content/about.md"
         fields:
-          - { name: title, label: "Title", widget: string, default: "About" }
-          - { name: body, label: "Content", widget: markdown, required: true }
+          - { name: title, label: "标题", widget: string, default: "About" }
+          - { name: body, label: "正文内容", widget: markdown, required: true }
       - name: "privacy"
-        label: "Privacy Policy"
+        label: "隐私政策"
         file: "content/privacy.md"
         fields:
-          - { name: title, label: "Title", widget: string, default: "Privacy Policy" }
-          - { name: body, label: "Content", widget: markdown, required: true }
+          - { name: title, label: "标题", widget: string, default: "Privacy Policy" }
+          - { name: body, label: "正文内容", widget: markdown, required: true }
       - name: "disclaimer"
-        label: "Disclaimer"
+        label: "免责声明"
         file: "content/disclaimer.md"
         fields:
-          - { name: title, label: "Title", widget: string, default: "Medical Disclaimer" }
-          - { name: body, label: "Content", widget: markdown, required: true }
+          - { name: title, label: "标题", widget: string, default: "Medical Disclaimer" }
+          - { name: body, label: "正文内容", widget: markdown, required: true }
