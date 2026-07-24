@@ -23,8 +23,8 @@ git push -u origin main
 ### 2. 建一个免费的 GitHub OAuth 应用（Decap 登录用）
 1. GitHub → 右上角头像 → **Settings** → 左侧 **Developer settings** → **OAuth Apps** → **New OAuth App**。
 2. Application name：`PawTrainer Admin`
-3. Homepage URL：`https://你的域名`（例如 `https://pawtrainer.com`）
-4. Authorization callback URL：**`https://你的域名/admin/`**（结尾斜杠必须有）
+3. Homepage URL：`https://你的域名`（路线 A 用 `https://pawtrainer.pages.dev`；之后买真域名再改）
+4. Authorization callback URL：**`https://你的域名/admin/`**（路线 A 用 `https://pawtrainer.pages.dev/admin/`，结尾斜杠必须有）
 5. 创建后复制 **Client ID**，填进 `static/admin/config.yml` 的 `client_id`。
    （Client Secret 只留在 OAuth 应用里，不需要写进仓库——Decap 在浏览器里完成 token 交换。）
 
