@@ -22,8 +22,9 @@
 - **`functions/` 目录部署后不被识别**：项目用 Hugo 预设创建，根目录有 `functions/api/auth.js`，但 Cloudflare Pages 部署后「函数」标签页完全为空、线上 /api/auth 返回静态首页（200 OK），函数根本没执行。GitHub 仓库里文件存在、路径正确也无济于事。
 - **解决方案（已验证可行）**：改用 Cloudflare Pages **Advanced Mode**——把 OAuth 代理写成 `static/_worker.js`（Hugo 会原样复制到 `public/_worker.js`），用 `export default { async fetch(request, env) {...} }` 模块语法，`/api/auth` 走 OAuth 逻辑、其余路径 `return env.ASSETS.fetch(request)` 转发静态资源。`_worker.js` 在 `public/` 下 Pages 必定识别。
 - **重要**：一旦存在 `_worker.js`，整个 `functions/` 目录会被忽略（Cloudflare 设计如此），所以两者不能混用——已删除 `functions/` 目录。
-- Decap CMS 的 `base_url` 填 `https://pawtrainer.pages.dev/api`（Decap 会自动在后面加 `/auth`，最终请求 `/api/auth`）。
-- Cloudflare Pages 环境变量（生产）：`GITHUB_CLIENT_ID`、`GITHUB_CLIENT_SECRET`（在 Settings → Environment variables 添加，类型"密钥"亦可）。
+- Decap CMS 的 `base_url` 必须填 **纯 origin**（`https://pawtrainer.pages.dev`），不能带路径。因为 Decap 的 `Authenticator` 会强制校验弹窗 `e.origin === this.base_url`，而 `e.origin` 永远是协议+主机（无路径）。若 `base_url` 写成 `https://pawtrainer.pages.dev/api`，Decap 会把弹窗来源判定为不匹配，导致 token 被丢弃、无法登录。
+- 因此 Worker 必须同时拦截 `/auth`（Decap 实际请求）和 `/api/auth`（兼容旧配置/旧 OAuth callback URL）。
+- Cloudflare Pages 环境变量（生产）：`GITHUB_PAT`（PAT 模式，纯文本）或 `GITHUB_CLIENT_ID`、`GITHUB_CLIENT_SECRET`（OAuth 模式）。
 - 每次本地改完，用 GitHub Desktop 点 Push origin → Cloudflare 自动重新部署（约 30–60 秒）。bash 环境无 GitHub 凭据，push 会失败，必须由用户用 Desktop 推。
 
 ## 已锁定信息（用户 2026-07-24 提供）
