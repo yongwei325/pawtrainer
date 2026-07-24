@@ -25,6 +25,6 @@
 - 全部占位已替换为 PawTrainer / yongwei325/pawtrainer / pawtrainer.com（全局 Grep 0 残留）。
 
 ## 下一步
-- 路线 A 进行中：用户用 70579579@qq.com 注册 Cloudflare → 建 Pages 项目连 yongwei325/pawtrainer → 部署（hugo --minify / public / HUGO_VERSION=0.128.0）→ 得 pawtrainer.pages.dev。
-- 阶段 6 建 GitHub OAuth 应用后把 Client ID 发我 → 填进 static/admin/config.yml，后台 /admin/ 才可登录。
+- 阶段 3 进行中：用户建 GitHub OAuth 应用 → 把 Client ID 发我 → 我填进 static/admin/config.yml，后台 /admin/ 才能登录。
+- 后台可用后，先把 About / Privacy / Disclaimer / Contact 四个合规页面补齐（AdSense 必需）。
 - 之后把 ui-design 的 premium 设计移植进 Hugo 模板，注入 AdSense/联盟代码。
