@@ -48,23 +48,24 @@
       {{ .Content }}
     </div>
 
-    {{ with .Params.affiliate }}
-    <aside class="affiliate" aria-label="Recommended product">
-      <div class="affiliate__thumb" aria-hidden="true">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="10" rx="3"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
-      </div>
-      <div class="affiliate__body">
-        <h4>{{ .name }}</h4>
-        <p class="stars" aria-label="4.8 out of 5">★★★★★ <span style="color:var(--ink-faint)">4.8 · reader favorite</span></p>
-        <p>Honest pick from our testers — see the full guide for pros, cons, and alternatives.</p>
-        <div class="affiliate__foot">
-          {{ with .price }}<span class="affiliate__price">{{ . }}</span>{{ end }}
-          {{ if .url }}<a class="btn btn--primary" href="{{ .url }}" rel="sponsored nofollow" target="_blank" rel="noopener">View on Amazon</a>{{ end }}
-        </div>
-        {{ with .note }}<p class="affiliate__note">{{ . }}</p>{{ end }}
-      </div>
-    </aside>
-    {{ end }}
+    <!-- Affiliate product card temporarily disabled by user request -->
+    <!-- {{ with .Params.affiliate }} -->
+    <!-- <aside class="affiliate" aria-label="Recommended product"> -->
+    <!--   <div class="affiliate__thumb" aria-hidden="true"> -->
+    <!--     <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="10" rx="3"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg> -->
+    <!--   </div> -->
+    <!--   <div class="affiliate__body"> -->
+    <!--     <h4>{{ .name }}</h4> -->
+    <!--     <p class="stars" aria-label="4.8 out of 5">★★★★★ <span style="color:var(--ink-faint)">4.8 · reader favorite</span></p> -->
+    <!--     <p>Honest pick from our testers — see the full guide for pros, cons, and alternatives.</p> -->
+    <!--     <div class="affiliate__foot"> -->
+    <!--       {{ with .price }}<span class="affiliate__price">{{ . }}</span>{{ end }} -->
+    <!--       {{ if .url }}<a class="btn btn--primary" href="{{ .url }}" rel="sponsored nofollow" target="_blank" rel="noopener">View on Amazon</a>{{ end }} -->
+    <!--     </div> -->
+    <!--     {{ with .note }}<p class="affiliate__note">{{ . }}</p>{{ end }} -->
+    <!--   </div> -->
+    <!-- </aside> -->
+    <!-- {{ end }} -->
 
     {{ if .Params.show_ads }}
     <div class="ad" aria-label="Advertisement">
