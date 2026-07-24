@@ -12,8 +12,8 @@ backend:
   # The Client Secret stays in the OAuth app; Decap exchanges the token in-browser.
   client_id: "Ov231iANksrUSQab2xIq"
   # Cloudflare Pages Worker that proxies GitHub OAuth (see static/_worker.js).
-  # Decap appends /auth to this URL, so the actual endpoint is /api/auth.
-  base_url: https://pawtrainer.pages.dev/api
+  # Decap appends /auth to this URL, so the actual endpoint is /auth.
+  base_url: https://pawtrainer.pages.dev
 
 # Simple mode = save commits directly. Uncheck "Draft" + Save to publish.
 publish_mode: simple

@@ -5,7 +5,7 @@
  *   PAT mode:   GITHUB_PAT env var is set → returns token directly, NO OAuth popup.
  *   OAuth mode: GITHUB_CLIENT_ID + GITHUB_CLIENT_SECRET → full GitHub OAuth flow.
  *
- * Endpoint: https://pawtrainer.pages.dev/api/auth
+ * Endpoint: https://pawtrainer.pages.dev/auth (legacy /api/auth also supported)
  *
  * Required Cloudflare Pages environment variables:
  *   PAT mode:   GITHUB_PAT (a GitHub Personal Access Token with `repo` scope)
@@ -16,8 +16,9 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Auth endpoint
-    if (url.pathname === '/api/auth') {
+    // Auth endpoint — Decap appends /auth to base_url, so it calls /auth here.
+    // /api/auth is kept for backwards compatibility with earlier configs.
+    if (url.pathname === '/auth' || url.pathname === '/api/auth') {
       return handleAuth(request, env);
     }
 
