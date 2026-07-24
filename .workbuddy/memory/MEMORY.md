@@ -21,8 +21,9 @@
 ## 已锁定信息（用户 2026-07-24 提供）
 - 品牌名：**PawTrainer**；域名：**pawtrainer.com**（路线 A：先用免费子域 **pawtrainer.pages.dev** 上线，baseURL 已切到 pages.dev；待用户有外币卡或走国内平台买真域名后，再改回并绑 Custom domain）
 - 邮箱：**全部账号统一用 70579579@qq.com**（GitHub / Cloudflare / AdSense 同一邮箱，用户 2026-07-24 明确决策）。GitHub 用户名 yongwei325。
-- GitHub 用户名：**yongwei325**；仓库：yongwei325/pawtrainer
-- 全部占位已替换为 PawTrainer / yongwei325/pawtrainer / pawtrainer.com（全局 Grep 0 残留）。
+- GitHub 用户名：**yongwei325**；仓库：yongwei325/pawtrainer；GitHub OAuth Client ID：`0v231iWKpgZb7lu3up9U`。
+- 当前线上地址：**https://pawtrainer.pages.dev**（路线 A：Cloudflare Pages 免费子域，零成本，后续可绑定真域名）。
+- 全部占位已替换为 PawTrainer / yongwei325/pawtrainer / pawtrainer.pages.dev（全局 Grep 0 残留）。
 
 ## 下一步
 - 阶段 3 进行中：用户建 GitHub OAuth 应用 → 把 Client ID 发我 → 我填进 static/admin/config.yml，后台 /admin/ 才能登录。
