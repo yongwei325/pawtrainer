@@ -56,11 +56,14 @@ async function handleOAuth(request, env) {
     // allow_signup=true lets the user create a GitHub account from this prompt if needed.
     // We do NOT pass redirect_uri explicitly — let GitHub fall back to the
     // OAuth App's configured callback URL. This avoids redirect_uri matching edge cases.
+    // scope=public_repo because the repo is public; `repo` can require extra app verification.
+    // prompt=consent forces the consent screen every time (bypasses cached prior approvals).
     const params = new URLSearchParams({
       client_id: CLIENT_ID,
-      scope: 'repo',
+      scope: 'public_repo',
       state,
       allow_signup: 'true',
+      prompt: 'consent',
     });
     const githubUrl = `https://github.com/login/oauth/authorize?${params.toString()}`;
     return Response.redirect(githubUrl, 302);
