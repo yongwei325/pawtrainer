@@ -14,8 +14,15 @@
 - 推荐路径：Cloudflare 一站买域名+托管；用 **GitHub Desktop（GUI）** 推代码，避免命令行。
 
 ## 已交付物（D:\Yongwei\探讨\）
-- `ui-design/`：premium 前端设计稿（index.html/article.html/styles.css/design-system.md），爪印+鼠尾草绿+暖琥珀，Fraunces/Newsreader 字体。尚未移植进 Hugo 模板。
-- Hugo 站点骨架：`config.toml`、`static/admin/`(Decap)、`layouts/`、`content/posts/`(示范文)、`ADMIN.md`、`LAUNCH.md`(小白启动手册)。
+- `ui-design/`：premium 前端设计稿（原始稿，保留作参考）。**设计已于 2026-07-24 移植进 Hugo 模板**（见下"Hugo 模板结构"）。
+- Hugo 站点骨架：`config.toml`、`static/admin/`(Decap)、`static/css/main.css`(设计系统单一来源)、`layouts/`、`content/`、`ADMIN.md`、`LAUNCH.md`。
+- Hugo 模板结构（2026-07-24 移植完成）：
+  - `layouts/_default/baseof.html`：header(毛玻璃+品牌+导航+主题切换+汉堡) / footer(4列) / cookie 条 / 无闪烁主题初始化 + 主题&移动菜单&cookie 的 JS。
+  - `layouts/index.html`：hero + 4 个训练路径卡片 + force-free 承诺带 + 动态"最新指南"网格（复用 `layouts/partials/post-card.html`）。
+  - `layouts/_default/single.html`：文章(post) 完整布局（面包屑/头图/TOC/AdSense 占位 gated by show_ads/联盟卡/作者卡/相关/免责）；非 posts 页面走 `.page` 简单分支。
+  - `layouts/_default/list.html`：文章卡片网格（/posts/ 与分类/标签归档）。
+  - `content/`：posts/(示范文) + about/privacy/disclaimer/contact(合规页，AdSense 必需 Privacy)。
+  - `static/robots.txt`（指向 sitemap.xml；Hugo 自带 /sitemap.xml）。
 - 验证坑：Hugo 默认不发布"发布时间晚于当前"的文章（draft/未来日期会被静默隐藏）。
 
 ## ⚠️ Cloudflare Pages 关键坑（2026-07-24 实战踩坑）
@@ -35,6 +42,6 @@
 - 全部占位已替换为 PawTrainer / yongwei325/pawtrainer / pawtrainer.pages.dev（全局 Grep 0 残留）。
 
 ## 下一步
-- 阶段 3 进行中：用户建 GitHub OAuth 应用 → 把 Client ID 发我 → 我填进 static/admin/config.yml，后台 /admin/ 才能登录。
-- 后台可用后，先把 About / Privacy / Disclaimer / Contact 四个合规页面补齐（AdSense 必需）。
-- 之后把 ui-design 的 premium 设计移植进 Hugo 模板，注入 AdSense/联盟代码。
+- 后台已可用（PAT 模式）。合规页 about/privacy/disclaimer/contact 已补齐。
+- 设计已移植上线（待本次 Push 后线上生效）。
+- 待办：写满 ≥20–30 篇原创文章 → 申请 AdSense（把 `.ad` 占位替换为真实 AdSense 代码）；写满文章后注入联盟 ID；可选：买真域名 pawtrainer.com 绑 Custom domain。
