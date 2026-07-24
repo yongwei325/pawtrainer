@@ -5,9 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex" />
   <title>Content Admin · PawTrainer</title>
-  <!-- Decap CMS (formerly Netlify CMS) — git-backed, no server needed -->
-  <script src="https://unpkg.com/decap-cms@^3.3.3/dist/decap-cms.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 2rem; background: #f9f8f6; color: #2c2a26; }
+    #cms-loader { max-width: 480px; margin: 8rem auto; text-align: center; }
+    #cms-loader h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    #cms-loader p { color: #6b6860; }
+    #cms-error { display: none; max-width: 640px; margin: 4rem auto; padding: 1.5rem; background: #fff; border: 1px solid #e0ddd5; border-radius: 12px; }
+    #cms-error h2 { color: #b91c1c; margin-top: 0; }
+    #cms-error code { background: #f3f2ef; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+    #cms-error pre { background: #f3f2ef; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; }
+  </style>
 </head>
 <body>
+  <div id="cms-loader">
+    <h1>Loading PawTrainer Editor…</h1>
+    <p>If this screen stays blank for more than 10 seconds, check the error message below.</p>
+  </div>
+
+  <div id="cms-error">
+    <h2>Editor failed to load</h2>
+    <p id="cms-error-msg"></p>
+    <p>Try refreshing the page. If it still fails, open browser console (F12 → Console) and send a screenshot.</p>
+  </div>
+
+  <!-- Decap CMS (formerly Netlify CMS) — git-backed, no server needed -->
+  <!-- Primary: jsDelivr (often faster in China); fallback handled below -->
+  <script src="https://cdn.jsdelivr.net/npm/decap-cms@3.3.3/dist/decap-cms.js"></script>
+  <script>
+    (function () {
+      var loader = document.getElementById('cms-loader');
+      var errorBox = document.getElementById('cms-error');
+      var errorMsg = document.getElementById('cms-error-msg');
+
+      function showError(msg) {
+        loader.style.display = 'none';
+        errorBox.style.display = 'block';
+        errorMsg.textContent = msg;
+      }
+
+      window.onerror = function (message, source, lineno) {
+        showError(message + (source ? ' at ' + source + ':' + lineno : ''));
+      };
+
+      try {
+        if (typeof CMS === 'undefined') {
+          showError('CMS script did not load. The CDN may be blocked in your network. Try a different network or VPN.');
+          return;
+        }
+        CMS.init();
+      } catch (e) {
+        showError(e.message || String(e));
+      }
+    })();
+  </script>
 </body>
 </html>
