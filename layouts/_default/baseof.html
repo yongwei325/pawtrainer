@@ -1,0 +1,52 @@
+{{/*
+  PLACEHOLDER base layout — minimal & functional.
+  Replace with the premium design from ui-design/ (Fraunces/Newsreader,
+  sage+amber tokens) when porting the visual system into Hugo.
+*/}}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ .Title }} | PawTrainer</title>
+  <meta name="description" content="{{ .Params.summary | default .Site.Params.description }}">
+  <style>
+    :root{--ink:#2a2622;--muted:#6b6258;--brand:#3f7d5a;--paper:#fbf8f3;--line:#e7e0d6}
+    *{box-sizing:border-box}
+    body{margin:0;font:17px/1.7 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--paper)}
+    header.nav{border-bottom:1px solid var(--line);padding:1rem clamp(1rem,4vw,2rem);display:flex;align-items:center;gap:1rem}
+    header.nav a.brand{font-weight:700;color:var(--ink);text-decoration:none;font-size:1.2rem}
+    header.nav nav{margin-left:auto;display:flex;gap:1rem}
+    header.nav nav a{color:var(--muted);text-decoration:none}
+    main{max-width:720px;margin:0 auto;padding:2.5rem clamp(1rem,4vw,2rem)}
+    footer{border-top:1px solid var(--line);padding:2rem;color:var(--muted);font-size:.85rem;text-align:center}
+    h1{font-size:2.2rem;line-height:1.15;margin:0 0 .5rem}
+    h2{margin-top:2rem}
+    .meta{color:var(--muted);font-size:.9rem}
+    .summary{font-size:1.1rem;color:var(--muted)}
+    .ad{border:1px dashed var(--line);padding:1rem;text-align:center;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;margin:2rem 0}
+    .affiliate{border:1px solid var(--brand);border-radius:12px;padding:1rem;margin:2rem 0}
+    .affiliate a{font-weight:600}
+    .author{border-top:1px solid var(--line);margin-top:2rem;padding-top:1rem;color:var(--muted);font-size:.9rem}
+    a{color:var(--brand)}
+    ul.posts{list-style:none;padding:0}
+    ul.posts li{padding:.75rem 0;border-bottom:1px solid var(--line)}
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="/">{{ .Site.Params.brand }}</a>
+    <nav>
+      <a href="/posts/">Articles</a>
+      <a href="/about/">About</a>
+      <a href="/privacy/">Privacy</a>
+    </nav>
+  </header>
+  <main>
+    {{ block "main" . }}{{ end }}
+  </main>
+  <footer>
+    © {{ now.Year }} {{ .Site.Params.brand }}. Force-free, science-based dog training.
+  </footer>
+</body>
+</html>

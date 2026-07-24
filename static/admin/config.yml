@@ -1,0 +1,114 @@
+# =============================================================================
+# Decap CMS configuration — "PawTrainer" dog-training site
+# Docs: https://decapcms.org/docs/configuration-options/
+# This editor commits Markdown into the repo; Hugo (Cloudflare Pages) rebuilds.
+# =============================================================================
+
+backend:
+  name: github
+  repo: yongwei325/pawtrainer
+  branch: main
+  # GitHub OAuth app Client ID (create a free OAuth app — see ADMIN.md).
+  # The Client Secret stays in the OAuth app; Decap exchanges the token in-browser.
+  client_id: "your_github_oauth_client_id"
+
+# Simple mode = save commits directly. Uncheck "Draft" + Save to publish.
+publish_mode: simple
+
+# Images uploaded in the editor are stored here and served at /images
+media_folder: "static/images"
+public_folder: "/images"
+
+# Show the editor at this path
+site_url: https://pawtrainer.com   # used for preview links
+
+collections:
+  # ---------------------------------------------------------------------------
+  # Articles — the core content type
+  # ---------------------------------------------------------------------------
+  - name: "posts"
+    label: "Articles"
+    label_singular: "Article"
+    folder: "content/posts"
+    create: true
+    slug: "{{slug}}"
+    format: yaml
+    extension: md
+    delimiter: "---"
+    summary: "{{title}}"
+    fields:
+      - { name: title, label: "Title", widget: string, required: true }
+      - { name: date, label: "Publish Date", widget: datetime, required: true }
+      - name: draft
+        label: "Draft (hidden until published)"
+        widget: boolean
+        default: true
+        hint: "Keep ON while writing. Turn OFF and Save to publish the article."
+      - name: category
+        label: "Category"
+        widget: select
+        default: "Puppy Basics"
+        options:
+          - "Puppy Basics"
+          - "Behavior Problems"
+          - "Commands"
+          - "Gear & Reviews"
+      - name: tags
+        label: "Tags"
+        widget: list
+        field: { name: tag, label: "Tag", widget: string }
+        summary: "{{fields.tag}}"
+      - name: summary
+        label: "Excerpt"
+        widget: text
+        hint: "Short summary shown on cards and in search results."
+      - name: author
+        label: "Author (E-E-A-T signal)"
+        widget: object
+        collapsed: false
+        fields:
+          - { name: name, label: "Name", widget: string, default: "PawTrainer Editors" }
+          - { name: bio, label: "Bio", widget: text }
+      - name: hero_image
+        label: "Hero Image"
+        widget: image
+        required: false
+      - name: affiliate
+        label: "Affiliate Product (optional)"
+        widget: object
+        required: false
+        fields:
+          - { name: name, label: "Product Name", widget: string }
+          - { name: url, label: "Affiliate URL", widget: string }
+          - { name: price, label: "Price", widget: string }
+          - { name: note, label: "Disclosure Note", widget: string, default: "As an Amazon Associate we earn from qualifying purchases." }
+      - name: show_ads
+        label: "Show AdSense ads on this page"
+        widget: boolean
+        default: true
+      - { name: body, label: "Content", widget: markdown, required: true, hint: "Write the article in Markdown." }
+
+  # ---------------------------------------------------------------------------
+  # Static pages — About / Privacy / Disclaimer (needed for AdSense compliance)
+  # ---------------------------------------------------------------------------
+  - name: "pages"
+    label: "Pages"
+    files:
+      - name: "about"
+        label: "About"
+        file: "content/about.md"
+        fields:
+          - { name: title, label: "Title", widget: string, default: "About" }
+          - { name: body, label: "Content", widget: markdown, required: true }
+      - name: "privacy"
+        label: "Privacy Policy"
+        file: "content/privacy.md"
+        fields:
+          - { name: title, label: "Title", widget: string, default: "Privacy Policy" }
+          - { name: body, label: "Content", widget: markdown, required: true }
+      - name: "disclaimer"
+        label: "Disclaimer"
+        file: "content/disclaimer.md"
+        fields:
+          - { name: title, label: "Title", widget: string, default: "Medical Disclaimer" }
+          - { name: body, label: "Content", widget: markdown, required: true }

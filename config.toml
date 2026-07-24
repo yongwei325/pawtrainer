@@ -1,0 +1,23 @@
+# =============================================================================
+# PawTrainer — Hugo site configuration
+# Deploy: Cloudflare Pages  →  Build command: hugo --minify  →  Publish dir: public
+# (Set Hugo version to latest in the Cloudflare dashboard.)
+# =============================================================================
+
+baseURL = "https://pawtrainer.com"
+languageCode = "en-us"
+title = "PawTrainer — Force-free Dog Training"
+enableGitInfo = false
+
+[params]
+  description = "Science-based, force-free dog training tips for new puppy parents."
+  brand = "PawTrainer"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true   # allow small HTML snippets (affiliate cards, etc.) inside Markdown
+
+[services]
+  [services.rss]
+    limit = 20

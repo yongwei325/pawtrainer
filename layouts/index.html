@@ -1,0 +1,13 @@
+{{ define "main" }}
+  <h1>Force-free Dog Training</h1>
+  <p class="summary">{{ .Site.Params.description }}</p>
+  <h2>Latest articles</h2>
+  <ul class="posts">
+    {{ range where .Site.RegularPages "Section" "posts" }}
+      <li>
+        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+        <span class="meta"> · {{ .Date.Format "Jan 2, 2006" }}</span>
+      </li>
+    {{ end }}
+  </ul>
+{{ end }}

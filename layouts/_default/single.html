@@ -1,0 +1,33 @@
+{{ define "main" }}
+  <article>
+    <h1>{{ .Title }}</h1>
+    <p class="meta">
+      {{ .Date.Format "Jan 2, 2006" }}{{ with .Params.category }} · {{ . }}{{ end }}
+    </p>
+    {{ with .Params.summary }}<p class="summary">{{ . }}</p>{{ end }}
+    {{ if and .Params.hero_image (ne .Params.hero_image "") }}
+      <img src="{{ .Params.hero_image }}" alt="{{ .Title }}">
+    {{ end }}
+
+    {{ if .Params.show_ads }}<div class="ad">Advertisement</div>{{ end }}
+
+    {{ .Content }}
+
+    {{ with .Params.affiliate }}
+      <div class="affiliate">
+        <strong>{{ .name }}</strong><br>
+        {{ if .price }}<span>{{ .price }}</span> · {{ end }}
+        {{ if .url }}<a href="{{ .url }}" rel="sponsored nofollow" target="_blank" rel="noopener">View on Amazon →</a>{{ end }}
+        {{ if .note }}<br><small>{{ .note }}</small>{{ end }}
+      </div>
+    {{ end }}
+
+    {{ if .Params.show_ads }}<div class="ad">Advertisement</div>{{ end }}
+
+    {{ with .Params.author }}
+      <div class="author">
+        <strong>By {{ .name }}</strong><br>{{ .bio }}
+      </div>
+    {{ end }}
+  </article>
+{{ end }}
