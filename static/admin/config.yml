@@ -10,7 +10,7 @@ backend:
   branch: main
   # GitHub OAuth app Client ID (create a free OAuth app — see ADMIN.md).
   # The Client Secret stays in the OAuth app; Decap exchanges the token in-browser.
-  client_id: "your_github_oauth_client_id"
+  client_id: "0v231iWKpgZb7lu3up9U"
 
 # Simple mode = save commits directly. Uncheck "Draft" + Save to publish.
 publish_mode: simple
